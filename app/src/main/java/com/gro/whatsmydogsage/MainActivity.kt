@@ -94,7 +94,7 @@ fun Screen() {
                 modifier = Modifier.width(275.dp),
                 shape = RoundedCornerShape(0),
             ) {
-                Text("Calculate")
+                Text(stringResource(R.string.calculate), color = Color.White, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
