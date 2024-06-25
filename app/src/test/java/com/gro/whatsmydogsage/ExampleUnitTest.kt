@@ -9,13 +9,13 @@ import org.junit.Test
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class WhatsMyDogAgeScreenTest {
-@Test
-fun testSmallSize() {
-    assertEquals("42", smallSize(6))
-}
+    @Test
+    fun testSmallSize() {
+        assertEquals("42", smallSize(6))
+    }
 
-@Test
-fun testBigSize() {
-    assertEquals("50", bigSize(6))
-}
+    @Test
+    fun testBigSize() {
+        assertEquals("50", bigSize(6))
+    }
 }
