@@ -18,12 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,45 +49,7 @@ class MainActivity : ComponentActivity() {
 fun Screen() {
     var inputNumber by remember { mutableStateOf("") }
     var result by remember { mutableStateOf("") }
-    var size by remember { mutableIntStateOf(0) }
-
-    fun smallSize(): String {
-        val firstTwoYears = 24.0
-        val years = inputNumber.toInt()
-        if( years > 2 ){
-            val ageNumber = (((years - 2)) * 4.5) + firstTwoYears
-            return ageNumber.toInt().toString()
-        } else if( years == 2 ){
-            return firstTwoYears.toInt().toString()
-        } else if( years == 1 ){
-            return  "12"
-        } else {
-            return "0"
-        }
-    }
-
-    fun bigSize(): String {
-        val firstTwoYears = 18.0
-        val years = inputNumber.toInt()
-        if( years > 2 ){
-            val ageNumber = (((years - 2)) * 8) + firstTwoYears
-            return ageNumber.toInt().toString()
-        } else if( years == 2 ){
-            return firstTwoYears.toInt().toString()
-        } else if( years == 1 ){
-            return  "9"
-        } else {
-            return "0"
-        }
-    }
-
-    fun setDogAge(){
-        result = if(size == 0){
-            smallSize()
-        }else{
-            bigSize()
-        }
-    }
+    var size by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier
@@ -107,14 +64,12 @@ fun Screen() {
             fontSize = 30.sp,
             color = Color.White,
             modifier = Modifier.padding(bottom = 16.dp, top = 100.dp),
-            onTextLayout = {}
         )
         Text(
             text = result,
             fontWeight = FontWeight.Bold,
             color = colorResource(id = R.color.orange_500),
             fontSize = 60.sp,
-            onTextLayout = {}
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -130,7 +85,7 @@ fun Screen() {
                 modifier = Modifier.width(140.dp),
                 shape = RectangleShape,
             ) {
-                Text(text = stringResource(R.string.small), onTextLayout = {})
+                Text(text = stringResource(R.string.small))
             }
             Button(
                 onClick = { size = 1 },
@@ -141,9 +96,8 @@ fun Screen() {
                 border = BorderStroke(0.5.dp, Color.Gray),
                 modifier = Modifier.width(140.dp),
                 shape = RectangleShape,
-
-                ) {
-                Text(text = stringResource(R.string.big), onTextLayout = {})
+            ) {
+                Text(text = stringResource(R.string.big))
             }
         }
 
@@ -152,7 +106,7 @@ fun Screen() {
             value = inputNumber,
             onValueChange = { inputNumber = it },
             Modifier.background(Color.White),
-            label = { Text(stringResource(R.string.years), onTextLayout = {}) },
+            label = { Text(stringResource(R.string.years)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
 
@@ -160,15 +114,51 @@ fun Screen() {
 
         Button(
             onClick = {
-                setDogAge()
+                result = if (size == 0) {
+                    smallSize(inputNumber.toInt())
+                } else {
+                    bigSize(inputNumber.toInt())
+                }
             },
             colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange_500)),
             modifier = Modifier.width(280.dp),
             shape = RectangleShape,
         ) {
-            Text(stringResource(R.string.calculate), color = Color.White, fontWeight = FontWeight.Bold, onTextLayout = {})
+            Text(
+                stringResource(R.string.calculate),
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+fun smallSize(years: Int): String {
+    val firstTwoYears = 24.0
+    if (years > 2) {
+        val ageNumber = (((years - 2)) * 4.5) + firstTwoYears
+        return ageNumber.toInt().toString()
+    } else if (years == 2) {
+        return firstTwoYears.toInt().toString()
+    } else if (years == 1) {
+        return "12"
+    } else {
+        return "0"
+    }
+}
+
+fun bigSize(years: Int): String {
+    val firstTwoYears = 18.0
+    if (years > 2) {
+        val ageNumber = (((years - 2)) * 8) + firstTwoYears
+        return ageNumber.toInt().toString()
+    } else if (years == 2) {
+        return firstTwoYears.toInt().toString()
+    } else if (years == 1) {
+        return "9"
+    } else {
+        return "0"
     }
 }
 
