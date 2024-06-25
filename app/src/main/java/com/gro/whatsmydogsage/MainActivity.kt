@@ -1,18 +1,18 @@
 package com.gro.whatsmydogsage
 
 import android.os.Bundle
-import android.provider.CalendarContract.Colors
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,15 +20,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WhatsMyDogsAgeTheme {
-                    Screen()
+                Screen()
             }
         }
     }
@@ -51,54 +52,125 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Screen() {
-        var inputNumber by remember { mutableStateOf("") }
-        var result by remember { mutableStateOf("") }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(R.string.AppName),
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                fontSize = 30.sp,
-                color = Color.White,
-                modifier = Modifier.padding(bottom = 16.dp, top = 100.dp),
-            )
-            Text(
-                text = result,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.orange_500),
-                fontSize = 60.sp,
-                )
-            TextField(
-                value = inputNumber,
-                onValueChange = { inputNumber = it },
-                Modifier.background(Color.White),
-                label = { Text(stringResource(R.string.years)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
+    var inputNumber by remember { mutableStateOf("") }
+    var result by remember { mutableStateOf("") }
+    var size by remember { mutableIntStateOf(0) }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    fun setDogAge(){
-                        result = (inputNumber.toInt() * 7).toString()
-                    }
-                    setDogAge()
-                },
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange_500)),
-                modifier = Modifier.width(275.dp),
-                shape = RoundedCornerShape(0),
-            ) {
-                Text(stringResource(R.string.calculate), color = Color.White, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+    fun smallSize(): String {
+        val firstTwoYears = 24.0
+        val years = inputNumber.toInt()
+        if( years > 2 ){
+            val ageNumber = (((years - 2)) * 4.5) + firstTwoYears
+            return ageNumber.toInt().toString()
+        } else if( years == 2 ){
+            return firstTwoYears.toInt().toString()
+        } else if( years == 1 ){
+            return  "12"
+        } else {
+            return "0"
         }
     }
+
+    fun bigSize(): String {
+        val firstTwoYears = 18.0
+        val years = inputNumber.toInt()
+        if( years > 2 ){
+            val ageNumber = (((years - 2)) * 8) + firstTwoYears
+            return ageNumber.toInt().toString()
+        } else if( years == 2 ){
+            return firstTwoYears.toInt().toString()
+        } else if( years == 1 ){
+            return  "9"
+        } else {
+            return "0"
+        }
+    }
+
+    fun setDogAge(){
+        result = if(size == 0){
+            smallSize()
+        }else{
+            bigSize()
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.AppName),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            fontSize = 30.sp,
+            color = Color.White,
+            modifier = Modifier.padding(bottom = 16.dp, top = 100.dp),
+            onTextLayout = {}
+        )
+        Text(
+            text = result,
+            fontWeight = FontWeight.Bold,
+            color = colorResource(id = R.color.orange_500),
+            fontSize = 60.sp,
+            onTextLayout = {}
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row {
+            Button(
+                onClick = { size = 0 },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (size == 0) Color.White else colorResource(id = R.color.green_400),
+                    contentColor = Color.Black
+                ),
+                border = BorderStroke(0.5.dp, Color.Gray),
+                modifier = Modifier.width(140.dp),
+                shape = RectangleShape,
+            ) {
+                Text(text = stringResource(R.string.small), onTextLayout = {})
+            }
+            Button(
+                onClick = { size = 1 },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (size == 1) Color.White else colorResource(id = R.color.green_400),
+                    contentColor = Color.Black
+                ),
+                border = BorderStroke(0.5.dp, Color.Gray),
+                modifier = Modifier.width(140.dp),
+                shape = RectangleShape,
+
+                ) {
+                Text(text = stringResource(R.string.big), onTextLayout = {})
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        TextField(
+            value = inputNumber,
+            onValueChange = { inputNumber = it },
+            Modifier.background(Color.White),
+            label = { Text(stringResource(R.string.years), onTextLayout = {}) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                setDogAge()
+            },
+            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.orange_500)),
+            modifier = Modifier.width(280.dp),
+            shape = RectangleShape,
+        ) {
+            Text(stringResource(R.string.calculate), color = Color.White, fontWeight = FontWeight.Bold, onTextLayout = {})
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

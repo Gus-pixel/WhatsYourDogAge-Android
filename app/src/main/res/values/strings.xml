@@ -3,4 +3,6 @@
     <string name="AppName">What\'s my dog\'s age?</string>
     <string name="years">Years</string>
     <string name="calculate">Calculate</string>
+    <string name="small">Small</string>
+    <string name="big">Big</string>
 </resources>
